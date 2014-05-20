@@ -1,0 +1,38 @@
+/**
+ * jQuery Grid Composer
+ *   
+ *  @package    app.css
+ *  @category   jquery plugin
+ *  @author     Rafael F. Silva <rafaelfsilva1@gmail.com>
+ *  @copyright  
+ *  @link       /src/jquery.grid-composer.css
+ *  @since      0.0.0
+**/
+
+.gc-components:after {
+	content: '';
+	clear: both;
+	display: block;
+}
+
+.gc-components .gc-component-item {
+	float: left;
+}
+
+.gc-grid {
+	position: relative;
+}
+
+.gc-grid .gc-grid-helper {
+	left: 0;
+	opacity: 0.4;
+	position: absolute;
+	top: 0;
+}
+
+.gc-grid .gc-grid-helper div {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	border: 1px dashed #C0C0C0;
+	float: left;
+}

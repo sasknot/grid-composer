@@ -1,0 +1,34 @@
+<html>
+<head>
+	<meta charset="utf8">
+	<link rel="stylesheet" href="../build/plugins.min.css">
+	<link rel="stylesheet" href="../build/jquery.grid-composer.min.css">
+	<style>
+		body {
+			margin: 0;
+		}
+	</style>
+	<script src="../build/plugins.min.js"></script>
+	<script src="../build/jquery.grid-composer.min.js"></script>
+	<!--<script src="../src/jquery.grid-composer.js"></script>-->
+	<script>
+		$(document).ready(function() {
+			$('#mainGrid').gridComposer({
+				dimension: 20,
+				columns: 48,
+				lines: 20
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="mainGrid">
+		<div class="gc-components">
+			<div class="gc-component-item gc-resize-horz" style="background:red;width:100px;height:100px;"></div>
+			<div class="gc-component-item gc-resize" style="background:blue;width:100px;height:100px;"></div>
+			<div class="gc-component-item gc-resize-vert" style="background:green;width:100px;height:100px;"></div>
+			<div class="gc-component-item" style="background:yellow;width:100px;height:100px;"></div>
+		</div>
+	</div>
+</body>
+</html>
