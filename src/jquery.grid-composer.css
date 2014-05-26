@@ -80,6 +80,18 @@
 	overflow: hidden;
 }
 
+.gc-grid .gc-grid-item .ui-resizable-n,
+.gc-grid .gc-grid-item .ui-resizable-nw,
+.gc-grid .gc-grid-item .ui-resizable-ne {
+	top: 0;
+}
+
+.gc-grid .gc-grid-item .ui-resizable-s,
+.gc-grid .gc-grid-item .ui-resizable-sw,
+.gc-grid .gc-grid-item .ui-resizable-se {
+	bottom: 0;
+}
+
 .gc-grid .gc-grid-item .ui-resizable-w,
 .gc-grid .gc-grid-item .ui-resizable-nw,
 .gc-grid .gc-grid-item .ui-resizable-sw {
