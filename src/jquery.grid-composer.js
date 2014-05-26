@@ -1,4 +1,4 @@
-/**
+/*!
  * jQuery Grid Composer
  *   
  *  @package    app.js
@@ -143,8 +143,8 @@
 					}
 
 					var $clone = $(ui.draggable).clone();
-					var left = ui.position.left;
-					var top = ui.position.top - ui.helper.parent().height();
+					var left = ui.offset.left - $(this).offset().left;
+					var top = ui.offset.top - $(this).offset().top;
 
 					$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
 
@@ -168,7 +168,7 @@
 						cursor: 'move',
 						grid: [settings.dimension, settings.dimension],
 
-						// Detect collision and reposition the element
+						// Prevent the collision with another element
 						drag: function( event, ui ) {
 							var colliding = false;
 							var dragging = {
