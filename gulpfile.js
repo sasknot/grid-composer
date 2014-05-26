@@ -20,13 +20,12 @@ var paths = {
 		plugins: [
 			'bower_components/jquery/dist/jquery.min.js',
 			'bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js',
-			'bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js',
 			'bower_components/jquery-ui/ui/minified/jquery.ui.widget.min.js',
 			'bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min.js',
 			'bower_components/jquery-ui/ui/minified/jquery.ui.draggable.min.js',
 			'bower_components/jquery-ui/ui/minified/jquery.ui.droppable.min.js',
 			'bower_components/jquery-ui/ui/minified/jquery.ui.resizable.min.js',
-			'bower_components/jquery-ui/ui/minified/jquery.ui.sortable.min.js',
+			'bower_components/jquery-ui/ui/minified/jquery.ui.sortable.min.js'
 		],
 		app: 'src/jquery.' + pkg.name + '.js'
 	}

@@ -15,6 +15,7 @@
 	$.fn.gridComposer = function( options ) {
 		var settings = $.extend({}, $.fn.gridComposer.defaults, options);
 
+		// Set the width and height or the columns and lines
 		if( settings.columns && settings.lines ) {
 			settings.width = settings.columns * settings.dimension;
 			settings.height = settings.lines * settings.dimension;
@@ -27,14 +28,16 @@
 			$.error('Grid Composer: columns and lines or width and height must be defined to calculate the grid');
 		}
 
+		// Iterate over the selected elements
 		return this.each(function() {
 			var $container = $(this);
-			var $components = $container.find('.gc-components');
 			var $grid = $('<div></div>').addClass('gc-grid');
 
+			// Define the container
 			$container.addClass('gc-container');
 			$grid.width(settings.width).height(settings.height);
 
+			// Build the background grid
 			if( settings.showGrid ) {
 				var $gridHelper = $('<div></div>').addClass('gc-grid-helper');
 
@@ -45,62 +48,184 @@
 				$gridHelper.appendTo($grid);
 			}
 
-			$components.children().draggable({
-				helper: 'clone'
-			});
+			// Build the components
+			if( settings.components && settings.components.length > 0 ) {
+				var $components = $('<div></div>').addClass('gc-components');
 
+				$.each(settings.components, function(index, component) {
+					if( component.lines && component.columns ) {
+						var $item;
+
+						$item = $('<div></div>')
+							.addClass('gc-component-item')
+							.width(component.columns * settings.dimension)
+							.height(component.lines * settings.dimension);
+							// .data({ columns: component.columns, lines: component.lines });
+
+						$.each(component.elements, function(index, element) {
+							var $image = $('<img />').attr({ src: element.image, alt: '', title: '' });
+
+							if( element.css ) {
+								$image.css(element.css);
+							}
+
+							$item.append($image);
+						});
+
+						if( component.resize && component.resize.length > 0 ) {
+							$item.addClass('gc-resize-' + component.resize.join('-'));
+						}
+
+						if( component.onDrop ) {
+							$item.on('on-drop', component.onDrop);
+						}
+
+						$item.appendTo($components);
+					}
+					else {
+						$.error('Grid Composer: component ' + component.name + ' must have a columns and lines number defined');
+					}
+				});
+
+				// Append the component container to the main container
+				$components.appendTo($container);
+
+				// Turn the components into draggables, being able to clone them
+				$components.children().draggable({
+					helper: 'clone',
+					revert: function( $droppable ) {
+						if( !$droppable ) {
+							return true;
+						}
+
+						if( $droppable.siblings('.gc-components').data('colliding') ) {
+							return true;
+						}
+					},
+					drag: function(event, ui) {
+						var colliding = false;
+						var dropping = {
+							x: ui.offset.left,
+							y: ui.offset.top,
+							w: $(ui.helper).width(),
+							h: $(ui.helper).height()
+						};
+
+						$(this).closest('.gc-container').find('.gc-grid .gc-grid-item').each(function() {
+							var dropped = {
+								x: $(this).offset().left,
+								y: $(this).offset().top,
+								w: $(this).width(),
+								h: $(this).height()
+							};
+
+							colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dropping,dropped);
+
+							if( colliding ) {
+								return false;
+							}
+						});
+
+						$(this).parent().data('colliding', colliding);
+					}
+				});
+			}
+
+			// Turn the grid into a droppable
 			$grid.droppable({
 				accept: '.gc-component-item',
+				tolerance: 'fit',
 				drop: function(event, ui) {
+
+					// Prevent the drop if it is colliding with another element
+					if( $(this).closest('.gc-container').find('.gc-components').data('colliding') ) {
+						return false;
+					}
+
 					var $clone = $(ui.draggable).clone();
 					var left = ui.position.left;
 					var top = ui.position.top - ui.helper.parent().height();
 
 					$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
 
+					// Round the left and top positions to the nearest divisor of the grid dimension
 					if( left % settings.dimension > 0 ) {
 						left = Math.round(left / settings.dimension) * settings.dimension;
 					}
-
 					if( top % settings.dimension > 0 ) {
 						top = Math.round(top / settings.dimension) * settings.dimension;
 					}
 
+					// Set the left and top positions and then append to the grid
 					$clone.css({
-						position: 'absolute',
 						left: left,
 						top: top
-					});
+					}).appendTo(this);
 
-					$(this).append($clone);
-
-					// Draggable grid items
-
+					// Turn the grid items into draggables
 					$(this).children('*:not(.gc-grid-helper)').draggable({
 						containment: 'parent',
 						cursor: 'move',
-						grid: [settings.dimension, settings.dimension]
+						grid: [settings.dimension, settings.dimension],
+
+						// Detect collision and reposition the element
+						drag: function( event, ui ) {
+							var colliding = false;
+							var dragging = {
+								x: ui.position.left,
+								y: ui.position.top,
+								w: $(this).width(),
+								h: $(this).height()
+							};
+
+							$(this).siblings('.gc-grid-item').each(function() {
+								var draggable = {
+									x: $(this).position().left,
+									y: $(this).position().top,
+									w: $(this).width(),
+									h: $(this).height()
+								};
+
+								// Calculate if the dragging element is colliding with this draggable one with this magic formula
+								colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dragging,draggable);
+
+								if( colliding ) {
+									return false;
+								}
+							});
+
+							// Return the current position to the last valid position
+							if( colliding ) {
+								ui.position = $(this).data('last-position');
+							}
+
+							// Store the current position
+							else {
+								$(this).data('last-position', ui.position);
+							}
+						}
 					});
 
-					// Resizable grid items
+					// Turn the grid items into resizables
+					$(this).children('[class*="gc-resize"]:not(.ui-resizable)').each(function(){
+						var theClass = $(this).attr('class').match(/gc-resize[-a-z]*/)[0].split('-');
 
-					$(this).children('.gc-resize').resizable({
-						containment: 'parent',
-						handles: 'e, s, se',
-						grid: settings.dimension
+						if( theClass.length > 2 ) {
+							var directions = theClass.slice(2).join(', ');
+
+							$(this).resizable({
+								containment: 'parent',
+								handles: directions,
+								grid: settings.dimension,
+								minWidth: $(this).width(),
+								minHeight: $(this).height(),
+								maxWidth: 500,
+								maxHeight: 500
+							});
+						}
 					});
 
-					$(this).children('.gc-resize-horz').resizable({
-						containment: 'parent',
-						handles: 'e',
-						grid: settings.dimension
-					});
-
-					$(this).children('.gc-resize-vert').resizable({
-						containment: 'parent',
-						handles: 's',
-						grid: settings.dimension
-					});
+					$(ui.draggable).trigger('on-drop', $clone);
 				}
 			});
 
