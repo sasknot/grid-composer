@@ -9,6 +9,11 @@
  *  @since      0.0.0
 **/
 
+.gc-components {
+	position: relative;
+	z-index: 1;
+}
+
 .gc-components:after {
 	content: '';
 	clear: both;
