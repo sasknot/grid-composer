@@ -57,7 +57,9 @@ gulp.task('js-dist', function() {
 
 	gulp.src(paths.scripts.app)
 		.pipe(rename('jquery.' + pkg.name + '.min.js'))
-		.pipe(uglify())
+		.pipe(uglify({
+			preserveComments: 'some'
+		}))
 		.pipe(gulp.dest('build'));
 });
 
