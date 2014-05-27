@@ -1,28 +1,42 @@
 grid-composer
 =============
 
-A plugin for composing a grid with elements.
-
-Any pull request are welcome!
+A plugin for putting elements in a grid.
 
 
-### Installation
+Installation
+============
 
-1. Make sure you have Node.js installed, or else download and install from: http://nodejs.org/
-2. Run the following commands in terminal:
+1. Make sure you have Node.js installed, or else download and install from [nodejs.org](http://nodejs.org)
+2. If you do not have [Bower](http://bower.io/) installed yet, run the following command and install it globally:
+`npm install -g bower`
 
-$ npm install
+3. Run the following commands in terminal to install gulp, it's plugins, external jQuery plugins and build the minified files:
+`npm install`
+`bower install`
+`gulp`
 
-To install gulp and it's plugins.
+Now you are ready to code and make awesome tricks!
 
-$ bower install
+License
+=======
 
-To install external plugins.
+The MIT License (MIT) Copyright (c) 2014 Rafael F. SIlva
 
-$ gulp
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-To build the minified css/js of the plugin.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
----
-
-Now you are ready to code!
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
