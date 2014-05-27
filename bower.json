@@ -5,7 +5,6 @@
     "Rafael F. Silva <rafaelfsilva1@gmail.com>"
   ],
   "description": "A plugin for composing a grid with elements",
-  "private": true,
   "license": "MIT",
   "ignore": [
     "**/.*",
