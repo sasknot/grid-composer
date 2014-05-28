@@ -55,6 +55,11 @@
 
 .gc-grid .gc-grid-item {
 	position: absolute;
+	z-index: 2;
+}
+
+.gc-grid .gc-grid-item.gc-can-overlay {
+	z-index: 1;
 }
 
 .gc-grid .gc-grid-item img {
