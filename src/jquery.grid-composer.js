@@ -148,7 +148,10 @@ var jqGCTimer = false;
 				$trash.droppable({
 					accept: '.gc-grid-item',
 					drop: function(event, ui) {
-						ui.draggable.fadeOut(600, function() {
+						ui.draggable.fadeOut(200, function() {
+							$(this).siblings('.gc-trash').removeClass('open');
+							$(this).parent().removeClass('gc-grid-with-timer');
+
 							$(this).remove();
 						});
 					}
@@ -196,34 +199,9 @@ var jqGCTimer = false;
 
 						// Prevent the collision with another element
 						drag: function( event, ui ) {
-							if( (ui.position.left + $(this).width()) == $(this).parent().width() ) {
-								if( !jqGCTimer ) {
-									jqGCTimer = setTimeout(function() {
-										var $grid = $('.gc-container .gc-grid.gc-grid-with-timer');
-
-										if( $grid.length > 0 ) {
-											$grid.find('.gc-trash').addClass('open');
-										}
-
-										$grid.removeClass('gc-grid-with-timer');
-										jqGCTimer = false;
-									}, 500);
-
-									$(this).parent().addClass('gc-grid-with-timer');
-								}
-							}
-							else {
-								if( jqGCTimer ) {
-									clearTimeout(jqGCTimer);
-								}
-								jqGCTimer = false;
-
-								$(this).siblings('.gc-trash').removeClass('open');
-								$(this).parent().removeClass('gc-grid-with-timer');
-							}
-
 							var lastPosition = $(this).data('last-position');
-							if( 
+
+							if(
 								!lastPosition
 								|| (
 									lastPosition.left != ui.position.left
@@ -237,6 +215,35 @@ var jqGCTimer = false;
 
 								$(this).siblings('.gc-trash').removeClass('open');
 								$(this).parent().removeClass('gc-grid-with-timer');
+							}
+							else {
+								var onSide = (ui.position.left + $(this).width()) == $(this).parent().width();
+
+								if( onSide ) {
+									if( !jqGCTimer ) {
+										jqGCTimer = setTimeout(function() {
+											var $grid = $('.gc-container .gc-grid.gc-grid-with-timer');
+
+											if( $grid.length > 0 ) {
+												$grid.find('.gc-trash').addClass('open');
+											}
+
+											$grid.removeClass('gc-grid-with-timer');
+											jqGCTimer = false;
+										}, 500);
+
+										$(this).parent().addClass('gc-grid-with-timer');
+									}
+								}
+								else {
+									if( jqGCTimer ) {
+										clearTimeout(jqGCTimer);
+									}
+									jqGCTimer = false;
+
+									$(this).siblings('.gc-trash').removeClass('open');
+									$(this).parent().removeClass('gc-grid-with-timer');
+								}
 							}
 
 							if( $(this).hasClass('gc-can-overlay') === false ) {
@@ -278,15 +285,6 @@ var jqGCTimer = false;
 									$(this).data('last-position', ui.position);
 								}
 							}
-						},
-						stop: function() {
-							if( jqGCTimer ) {
-								clearTimeout(jqGCTimer);
-							}
-							jqGCTimer = false;
-
-							$(this).siblings('.gc-trash').removeClass('open');
-							$(this).parent().removeClass('gc-grid-with-timer');
 						}
 					});
 

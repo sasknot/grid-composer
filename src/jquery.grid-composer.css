@@ -64,12 +64,12 @@
 	-ms-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
 	-o-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
-	background: rgba(255, 255, 255, 0.8) url(gc-trash.png) no-repeat center center;
+	background: rgba(255, 255, 255, 0.8) url(images/gc-trash.png) no-repeat center center;
 	height: 100%;
 	position: absolute;
-	right: -100px;
+	right: -140px;
 	top: 0;
-	width: 80px;
+	width: 120px;
 }
 
 .gc-grid .gc-trash.open {
@@ -92,7 +92,6 @@
 
 .gc-grid .gc-grid-item span {
 	display: inline-block;
-	padding: 0 4px;
 	position: relative;
 	text-align: center;
 	vertical-align: middle;

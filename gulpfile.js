@@ -7,12 +7,7 @@ var minifyCSS = require('gulp-minify-css');
 var pkg = require('./package.json');
 
 var paths = {
-	images: [
-		'src/*.jpg',
-		'src/*.jpeg',
-		'src/*.png',
-		'src/*.gif'
-	],
+	images: 'src/images/*.*',
 	stylesheets: {
 		plugins: [
 			'bower_components/jquery-ui/themes/base/minified/jquery.ui.core.min.css',
@@ -39,7 +34,7 @@ var paths = {
 
 gulp.task('css-dist', function() {
 	gulp.src(paths.images)
-		.pipe(gulp.dest('build'));
+		.pipe(gulp.dest('build/images'));
 
 	gulp.src(paths.stylesheets.plugins)
 		.pipe(concat('plugins.min.css'))
