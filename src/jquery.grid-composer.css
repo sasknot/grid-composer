@@ -35,6 +35,7 @@
 }
 
 .gc-grid {
+	overflow: hidden;
 	position: relative;
 }
 

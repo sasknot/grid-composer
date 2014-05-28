@@ -60,7 +60,6 @@
 							.addClass('gc-component-item')
 							.width(component.columns * settings.dimension)
 							.height(component.lines * settings.dimension);
-							// .data({ columns: component.columns, lines: component.lines });
 
 						$.each(component.elements, function(index, element) {
 							var $image = $('<img />').attr({ src: element.image, alt: '', title: '' });
@@ -71,6 +70,14 @@
 
 							$item.append($image);
 						});
+
+						if( component.overlay ) {
+							$item.addClass('gc-can-overlay');
+						}
+
+						if( component.immobile ) {
+							$item.addClass('gc-immobile');
+						}
 
 						if( component.resize && component.resize.length > 0 ) {
 							$item.addClass('gc-resize-' + component.resize.join('-'));
@@ -102,6 +109,8 @@
 							return true;
 						}
 					},
+
+					// See if the current dragging element is colling with another into the droppable
 					drag: function(event, ui) {
 						var colliding = false;
 						var dropping = {
@@ -111,7 +120,7 @@
 							h: $(ui.helper).height()
 						};
 
-						$(this).closest('.gc-container').find('.gc-grid .gc-grid-item').each(function() {
+						$(this).closest('.gc-container').find('.gc-grid .gc-grid-item:not(.gc-can-overlay)').each(function() {
 							var dropped = {
 								x: $(this).offset().left,
 								y: $(this).offset().top,
@@ -163,45 +172,47 @@
 					}).appendTo(this);
 
 					// Turn the grid items into draggables
-					$(this).children('*:not(.gc-grid-helper)').draggable({
+					$(this).children('*:not(.gc-grid-helper, .gc-immobile)').draggable({
 						containment: 'parent',
 						cursor: 'move',
 						grid: [settings.dimension, settings.dimension],
 
 						// Prevent the collision with another element
 						drag: function( event, ui ) {
-							var colliding = false;
-							var dragging = {
-								x: ui.position.left,
-								y: ui.position.top,
-								w: $(this).width(),
-								h: $(this).height()
-							};
-
-							$(this).siblings('.gc-grid-item').each(function() {
-								var draggable = {
-									x: $(this).position().left,
-									y: $(this).position().top,
+							if( $(this).hasClass('gc-can-overlay') === false ) {
+								var colliding = false;
+								var dragging = {
+									x: ui.position.left,
+									y: ui.position.top,
 									w: $(this).width(),
 									h: $(this).height()
 								};
 
-								// Calculate if the dragging element is colliding with this draggable one with this magic formula
-								colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dragging,draggable);
+								$(this).siblings('.gc-grid-item:not(.gc-can-overlay)').each(function() {
+									var draggable = {
+										x: $(this).position().left,
+										y: $(this).position().top,
+										w: $(this).width(),
+										h: $(this).height()
+									};
 
+									// Calculate if the dragging element is colliding with this draggable one with this magic formula
+									colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dragging,draggable);
+
+									if( colliding ) {
+										return false;
+									}
+								});
+
+								// Return the current position to the last valid position
 								if( colliding ) {
-									return false;
+									ui.position = $(this).data('last-position');
 								}
-							});
 
-							// Return the current position to the last valid position
-							if( colliding ) {
-								ui.position = $(this).data('last-position');
-							}
-
-							// Store the current position
-							else {
-								$(this).data('last-position', ui.position);
+								// Store the current position
+								else {
+									$(this).data('last-position', ui.position);
+								}
 							}
 						}
 					});

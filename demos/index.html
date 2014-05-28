@@ -206,6 +206,50 @@
 						],
 						columns: 3,
 						lines: 3
+					},
+					{
+						name: 'Lane',
+						elements: [
+							{
+								image: 'img/lane.png'
+							}
+						],
+						overlay: true,
+						immobile: true,
+						columns: 5,
+						lines: 3,
+						onDrop: function(event, item) {
+							var name = prompt('A name for the lane');
+							var height = 140;
+							var top = ($(item).siblings('.item-lane').length * height) - ($(item).siblings('.item-lane').length * 1);
+
+							var $newHTML = $('<div></div>').css({
+								border: '1px solid #333333',
+								height: height-2,
+								position: 'relative'
+							});
+
+							$('<div></div>').css({
+								'background-color': '#C0C0C0',
+								'border-bottom': '1px solid #333333',
+								color: '#333333',
+								left: -55,
+								overflow: 'hidden',
+								padding: '6px 0',
+								position: 'absolute',
+								'text-align': 'center',
+								top: 54,
+								'transform': 'rotate(270deg)',
+								'white-space': 'nowrap',
+								width: 140
+							}).text(name).appendTo($newHTML);
+
+							$(item).addClass('item-lane').css({
+								left: 0,
+								top: top,
+								width: '100%'
+							}).html($newHTML);
+						}
 					}
 				]
 			});
