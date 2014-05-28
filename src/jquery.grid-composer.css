@@ -70,6 +70,7 @@
 	right: -140px;
 	top: 0;
 	width: 120px;
+	z-index: 2;
 }
 
 .gc-grid .gc-trash.open {
@@ -78,7 +79,7 @@
 
 .gc-grid .gc-grid-item {
 	position: absolute;
-	z-index: 2;
+	z-index: 3;
 }
 
 .gc-grid .gc-grid-item.gc-can-overlay {
