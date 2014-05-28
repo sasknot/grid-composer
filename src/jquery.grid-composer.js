@@ -9,6 +9,8 @@
  *  @since      0.0.0
 **/
 
+var jqGCTimer = false;
+
 (function($) {
 	'use strict';
 
@@ -34,7 +36,8 @@
 			var $grid = $('<div></div>').addClass('gc-grid');
 
 			// Define the container
-			$container.addClass('gc-container');
+			$container.addClass('gc-container').width(settings.width);
+
 			$grid.width(settings.width).height(settings.height);
 
 			// Build the background grid
@@ -138,6 +141,20 @@
 						$(this).parent().data('colliding', colliding);
 					}
 				});
+
+				// Create the trash
+				var $trash = $('<div></div>').addClass('gc-trash');
+
+				$trash.droppable({
+					accept: '.gc-grid-item',
+					drop: function(event, ui) {
+						ui.draggable.fadeOut(600, function() {
+							$(this).remove();
+						});
+					}
+				});
+
+				$trash.appendTo($grid);
 			}
 
 			// Turn the grid into a droppable
@@ -172,13 +189,56 @@
 					}).appendTo(this);
 
 					// Turn the grid items into draggables
-					$(this).children('*:not(.gc-grid-helper, .gc-immobile)').draggable({
+					$(this).children('.gc-grid-item:not(.gc-immobile)').draggable({
 						containment: 'parent',
 						cursor: 'move',
 						grid: [settings.dimension, settings.dimension],
 
 						// Prevent the collision with another element
 						drag: function( event, ui ) {
+							if( (ui.position.left + $(this).width()) == $(this).parent().width() ) {
+								if( !jqGCTimer ) {
+									jqGCTimer = setTimeout(function() {
+										var $grid = $('.gc-container .gc-grid.gc-grid-with-timer');
+
+										if( $grid.length > 0 ) {
+											$grid.find('.gc-trash').addClass('open');
+										}
+
+										$grid.removeClass('gc-grid-with-timer');
+										jqGCTimer = false;
+									}, 500);
+
+									$(this).parent().addClass('gc-grid-with-timer');
+								}
+							}
+							else {
+								if( jqGCTimer ) {
+									clearTimeout(jqGCTimer);
+								}
+								jqGCTimer = false;
+
+								$(this).siblings('.gc-trash').removeClass('open');
+								$(this).parent().removeClass('gc-grid-with-timer');
+							}
+
+							var lastPosition = $(this).data('last-position');
+							if( 
+								!lastPosition
+								|| (
+									lastPosition.left != ui.position.left
+									|| lastPosition.top != ui.position.top
+								)
+							) {
+								if( jqGCTimer ) {
+									clearTimeout(jqGCTimer);
+								}
+								jqGCTimer = false;
+
+								$(this).siblings('.gc-trash').removeClass('open');
+								$(this).parent().removeClass('gc-grid-with-timer');
+							}
+
 							if( $(this).hasClass('gc-can-overlay') === false ) {
 								var colliding = false;
 								var dragging = {
@@ -188,7 +248,11 @@
 									h: $(this).height()
 								};
 
+								$(this).addClass('gc-dragging');
+
 								$(this).siblings('.gc-grid-item:not(.gc-can-overlay)').each(function() {
+									$(this).removeClass('gc-dragging');
+
 									var draggable = {
 										x: $(this).position().left,
 										y: $(this).position().top,
@@ -214,6 +278,15 @@
 									$(this).data('last-position', ui.position);
 								}
 							}
+						},
+						stop: function() {
+							if( jqGCTimer ) {
+								clearTimeout(jqGCTimer);
+							}
+							jqGCTimer = false;
+
+							$(this).siblings('.gc-trash').removeClass('open');
+							$(this).parent().removeClass('gc-grid-with-timer');
 						}
 					});
 
