@@ -3,11 +3,13 @@ var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
+var compass = require('gulp-compass');
 var minifyCSS = require('gulp-minify-css');
 var pkg = require('./package.json');
 
 var paths = {
 	images: 'src/images/*.*',
+	scss: 'src/*.scss',
 	stylesheets: {
 		plugins: [
 			'bower_components/jquery-ui/themes/base/minified/jquery.ui.core.min.css',
@@ -31,6 +33,17 @@ var paths = {
 		app: 'src/jquery.' + pkg.name + '.js'
 	}
 };
+
+gulp.task('css-compass', function() {
+	gulp.src(paths.scss)
+		.pipe(compass({
+			css: 'src',
+			sass: 'src',
+			image: 'src/images',
+			style: 'expanded',
+			comments: false
+		}));
+});
 
 gulp.task('css-dist', function() {
 	gulp.src(paths.images)
@@ -68,10 +81,11 @@ gulp.task('js-dist', function() {
 });
 
 gulp.task('watch', function() {
+	gulp.watch(paths.scss, ['css-compass']);
 	gulp.watch(paths.stylesheets.plugins, ['css-dist']);
 	gulp.watch(paths.stylesheets.app, ['css-dist']);
 	gulp.watch(paths.scripts.plugins, ['js-hint', 'js-dist']);
 	gulp.watch(paths.scripts.app, ['js-hint', 'js-dist']);
 });
 
-gulp.task('default', ['css-dist', 'js-hint', 'js-dist', 'watch']);
+gulp.task('default', ['css-compass', 'css-dist', 'js-hint', 'js-dist', 'watch']);
