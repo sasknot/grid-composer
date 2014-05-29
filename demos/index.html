@@ -18,6 +18,7 @@
 				lines: 20,
 				components: [
 					{
+						id: 1,
 						name: 'Task',
 						elements: [
 							{
@@ -35,6 +36,7 @@
 						}
 					},
 					{
+						id: 2,
 						name: 'Task Service',
 						elements: [
 							{
@@ -52,6 +54,7 @@
 						}
 					},
 					{
+						id: 3,
 						name: 'Start',
 						elements: [
 							{
@@ -62,6 +65,7 @@
 						lines: 3
 					},
 					{
+						id: 4,
 						name: 'If',
 						elements: [
 							{
@@ -72,6 +76,7 @@
 						lines: 3
 					},
 					{
+						id: 5,
 						name: 'Arrow Right',
 						elements: [
 							{
@@ -86,6 +91,7 @@
 						lines: 1
 					},
 					{
+						id: 6,
 						name: 'Arrow Right Down',
 						elements: [
 							{
@@ -107,6 +113,7 @@
 						lines: 3
 					},
 					{
+						id: 7,
 						name: 'Arrow Left Down',
 						elements: [
 							{
@@ -124,6 +131,7 @@
 						lines: 3
 					},
 					{
+						id: 8,
 						name: 'Arrow Left',
 						elements: [
 							{
@@ -135,6 +143,7 @@
 						lines: 1
 					},
 					{
+						id: 9,
 						name: 'Arrow Down',
 						elements: [
 							{
@@ -149,6 +158,7 @@
 						lines: 3
 					},
 					{
+						id: 10,
 						name: 'Arrow Up',
 						elements: [
 							{
@@ -160,6 +170,7 @@
 						lines: 3
 					},
 					{
+						id: 11,
 						name: 'Arrow Right Up',
 						elements: [
 							{
@@ -181,6 +192,7 @@
 						lines: 3
 					},
 					{
+						id: 12,
 						name: 'Arrow Left Up',
 						elements: [
 							{
@@ -198,6 +210,7 @@
 						lines: 3
 					},
 					{
+						id: 13,
 						name: 'End',
 						elements: [
 							{
@@ -208,6 +221,7 @@
 						lines: 3
 					},
 					{
+						id: 14,
 						name: 'Lane',
 						elements: [
 							{
@@ -265,13 +279,14 @@
 
 				$('#mainGrid .gc-grid .gc-grid-item').each(function(index) {
 					items.push({
-						id: index+1,
+						id: $(this).data('id'),
+						index: index+1,
 						x: $(this).position().left,
 						y: $(this).position().top,
 						w: $(this).width(),
 						h: $(this).height(),
-						image: $(this).find('img').attr('src'),
-						parentID: 0
+						parentID: 0,
+						data: $(this).data('data') || ''
 					});
 				});
 

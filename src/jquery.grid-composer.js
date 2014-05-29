@@ -62,7 +62,8 @@ var jqGCTimer = false;
 						$item = $('<div></div>')
 							.addClass('gc-component-item')
 							.width(component.columns * settings.dimension)
-							.height(component.lines * settings.dimension);
+							.height(component.lines * settings.dimension)
+							.data('id', (component.id || 0));
 
 						$.each(component.elements, function(index, element) {
 							var $image = $('<img />').attr({ src: element.image, alt: '', title: '' });
@@ -176,6 +177,9 @@ var jqGCTimer = false;
 					var top = ui.offset.top - $(this).offset().top;
 
 					$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
+
+					// Put the id on the cloned element
+					$clone.data('id', ui.draggable.data('id'));
 
 					// Round the left and top positions to the nearest divisor of the grid dimension
 					if( left % settings.dimension > 0 ) {
