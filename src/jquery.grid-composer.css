@@ -48,6 +48,7 @@
 
 .gc-grid .gc-grid-helper div {
 	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	border: 1px dashed #C0C0C0;
 	float: left;
@@ -61,8 +62,6 @@
 	transition: all .2s linear;
 	-webkit-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
-	-ms-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
-	-o-box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
 	background: rgba(255, 255, 255, 0.8) url(images/gc-trash.png) no-repeat center center;
 	height: 100%;
