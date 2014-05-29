@@ -148,6 +148,7 @@ var jqGCTimer = false;
 
 				$trash.droppable({
 					accept: '.gc-grid-item',
+					tolerance: 'touch',
 					drop: function(event, ui) {
 						ui.draggable.fadeOut(200, function() {
 							$(this).siblings('.gc-trash').removeClass('open');
