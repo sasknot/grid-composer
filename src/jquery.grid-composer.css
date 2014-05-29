@@ -38,6 +38,7 @@
   opacity: 0.4;
   position: absolute;
   top: 0;
+  z-index: 1;
 }
 .gc-grid .gc-grid-helper div {
   -webkit-box-sizing: border-box;
@@ -61,14 +62,14 @@
   right: -140px;
   top: 0;
   width: 120px;
-  z-index: 2;
+  z-index: 3;
 }
 .gc-grid .gc-trash.open {
   right: 0;
 }
 .gc-grid .gc-grid-item {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
 }
 .gc-grid .gc-grid-item:after {
   content: '';

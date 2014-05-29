@@ -201,6 +201,7 @@ var jqGCTimer = false;
 						containment: 'parent',
 						cursor: 'move',
 						grid: [settings.dimension, settings.dimension],
+						zIndex: 4,
 
 						// Prevent the collision with another element
 						drag: function( event, ui ) {

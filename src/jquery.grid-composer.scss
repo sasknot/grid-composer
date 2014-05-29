@@ -38,6 +38,7 @@
 		opacity: 0.4;
 		position: absolute;
 		top: 0;
+		z-index: 1;
 		div {
 			-webkit-box-sizing: border-box;
 			-moz-box-sizing: border-box;
@@ -61,14 +62,14 @@
 		right: -140px;
 		top: 0;
 		width: 120px;
-		z-index: 2;
+		z-index: 3;
 		&.open {
 			right: 0;
 		}
 	}
 	.gc-grid-item {
 		position: absolute;
-		z-index: 3;
+		z-index: 2;
 		&:after {
 			content: '';
 			height: 100%;
