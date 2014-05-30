@@ -17,17 +17,35 @@ var jqGCTimer = false;
 	$.fn.gridComposer = function( options ) {
 		var settings = $.extend({}, $.fn.gridComposer.defaults, options);
 
-		// Set the width and height or the columns and lines
-		if( settings.columns && settings.lines ) {
-			settings.width = settings.columns * settings.dimension;
-			settings.height = settings.lines * settings.dimension;
+		if( !settings.dimension ) {
+			$.error('Grid Composer: dimension must be defined');
 		}
-		else if( settings.width && settings.height ) {
+
+		// Set the width and height or the columns and lines
+		if( settings.columns ) {
+			settings.width = settings.columns * settings.dimension;
+		}
+		else if( settings.width ) {
 			settings.columns = settings.width / settings.dimension;
-			settings.lines = settings.height / settings.dimension;
+			if( settings.columns % settings.dimension > 0 ) {
+				$.error('Grid Composer: width is not divisible by the dimension parameter');
+			}
 		}
 		else {
-			$.error('Grid Composer: columns and lines or width and height must be defined to calculate the grid');
+			$.error('Grid Composer: columns or width must be defined to calculate the grid');
+		}
+
+		if( settings.lines ) {
+			settings.height = settings.lines * settings.dimension;
+		}
+		else if( settings.height ) {
+			settings.lines = settings.height / settings.dimension;
+			if( settings.height % settings.dimension > 0 ) {
+				$.error('Grid Composer: width is not divisible by the dimension parameter');
+			}
+		}
+		else {
+			$.error('Grid Composer: lines or height must be defined to calculate the grid');
 		}
 
 		// Iterate over the selected elements

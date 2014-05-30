@@ -63,6 +63,11 @@ Documentation
 			<td>--</td>
 		</tr>
 		<tr>
+			<td>showGrid</td>
+			<td>Whether show a representative background grid or not.</td>
+			<td>true</td>
+		</tr>
+		<tr>
 			<td>components</td>
 			<td>
 				Elements to be inserted into the grid. <br><br>Parameters:
@@ -133,11 +138,6 @@ Documentation
 				</table>
 			</td>
 			<td>--</td>
-		</tr>
-		<tr>
-			<td>showGrid</td>
-			<td></td>
-			<td>true</td>
 		</tr>
 	</tbody>
 </table>
