@@ -26,7 +26,7 @@ Now you are ready to code and make awesome tricks!
 Documentation
 --------------
 
-## Parameters
+### Parameters
 
 <table>
 	<thead>
