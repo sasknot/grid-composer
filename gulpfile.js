@@ -84,7 +84,7 @@ gulp.task('watch', function() {
 	gulp.watch(paths.scss, ['css-compass']);
 	gulp.watch(paths.stylesheets.plugins, ['css-dist']);
 	gulp.watch(paths.stylesheets.app, ['css-dist']);
-	gulp.watch(paths.scripts.plugins, ['js-hint', 'js-dist']);
+	gulp.watch(paths.scripts.plugins, ['js-dist']);
 	gulp.watch(paths.scripts.app, ['js-hint', 'js-dist']);
 });
 
