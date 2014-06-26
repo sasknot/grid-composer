@@ -32,6 +32,7 @@
 
 							if( name ) {
 								$(item).append('<span>' + name + '</span>');
+								$(item).data('data', {name:name});
 							}
 						}
 					},
@@ -88,7 +89,8 @@
 						],
 						resize: ['e'],
 						columns: 4,
-						lines: 1
+						lines: 1,
+						overlay: true
 					},
 					{
 						id: 6,
@@ -110,7 +112,8 @@
 						],
 						resize: ['s', 'e', 'se'],
 						columns: 4,
-						lines: 3
+						lines: 3,
+						overlay: true
 					},
 					{
 						id: 7,
@@ -128,7 +131,8 @@
 						],
 						resize: ['s', 'w', 'sw'],
 						columns: 4,
-						lines: 3
+						lines: 3,
+						overlay: true
 					},
 					{
 						id: 8,
@@ -140,7 +144,8 @@
 						],
 						resize: ['w'],
 						columns: 4,
-						lines: 1
+						lines: 1,
+						overlay: true
 					},
 					{
 						id: 9,
@@ -155,7 +160,8 @@
 						],
 						resize: ['s'],
 						columns: 1,
-						lines: 3
+						lines: 3,
+						overlay: true
 					},
 					{
 						id: 10,
@@ -167,7 +173,8 @@
 						],
 						resize: ['n'],
 						columns: 1,
-						lines: 3
+						lines: 3,
+						overlay: true
 					},
 					{
 						id: 11,
@@ -189,7 +196,8 @@
 						],
 						resize: ['n', 'e', 'ne'],
 						columns: 4,
-						lines: 3
+						lines: 3,
+						overlay: true
 					},
 					{
 						id: 12,
@@ -207,7 +215,8 @@
 						],
 						resize: ['n', 'w', 'nw'],
 						columns: 4,
-						lines: 3
+						lines: 3,
+						overlay: true
 					},
 					{
 						id: 13,

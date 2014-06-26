@@ -135,27 +135,30 @@ var jqGCTimer = false;
 					// See if the current dragging element is colling with another into the droppable
 					drag: function(event, ui) {
 						var colliding = false;
-						var dropping = {
-							x: ui.offset.left,
-							y: ui.offset.top,
-							w: $(ui.helper).width(),
-							h: $(ui.helper).height()
-						};
 
-						$(this).closest('.gc-container').find('.gc-grid .gc-grid-item:not(.gc-can-overlay)').each(function() {
-							var dropped = {
-								x: $(this).offset().left,
-								y: $(this).offset().top,
-								w: $(this).width(),
-								h: $(this).height()
+						if( settings.collision && $(this).hasClass('gc-can-overlay') === false ) {
+							var dropping = {
+								x: ui.offset.left,
+								y: ui.offset.top,
+								w: $(ui.helper).width(),
+								h: $(ui.helper).height()
 							};
 
-							colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dropping,dropped);
+							$(this).closest('.gc-container').find('.gc-grid .gc-grid-item:not(.gc-can-overlay)').each(function() {
+								var dropped = {
+									x: $(this).offset().left,
+									y: $(this).offset().top,
+									w: $(this).width(),
+									h: $(this).height()
+								};
 
-							if( colliding ) {
-								return false;
-							}
-						});
+								colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dropping,dropped);
+
+								if( colliding ) {
+									return false;
+								}
+							});
+						}
 
 						$(this).parent().data('colliding', colliding);
 					}
@@ -221,7 +224,6 @@ var jqGCTimer = false;
 						grid: [settings.dimension, settings.dimension],
 						zIndex: 4,
 
-						// Prevent the collision with another element
 						drag: function( event, ui ) {
 							var lastPosition = $(this).data('last-position');
 
@@ -270,7 +272,8 @@ var jqGCTimer = false;
 								}
 							}
 
-							if( $(this).hasClass('gc-can-overlay') === false ) {
+							// Prevent the collision with another element
+							if( settings.collision && $(this).hasClass('gc-can-overlay') === false ) {
 								var colliding = false;
 								var dragging = {
 									x: ui.position.left,
@@ -340,6 +343,7 @@ var jqGCTimer = false;
 	};
 
 	$.fn.gridComposer.defaults = {
-		showGrid: true
+		showGrid: true,
+		collision: false
 	};
 })(jQuery);
