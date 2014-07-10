@@ -21,37 +21,53 @@ var jqGCTimer = false;
 
 		},
 
-		addToGrid: function(event, ui, settings) {
+		getComponent: function( id ) {
+			var component = false;
+
+			$(this).find('.gc-components .gc-component-item').each(function() {
+				if( $(this).data('id') == id ) {
+					component = this;
+					return false;
+				}
+			});		
+
+			return component;
+		},
+
+		addToGrid: function(item) {
+			var $grid = $(this).find('.gc-grid');
+			var $clone;
+			var settings = GridComposer.settings;
+
 			// Prevent the drop if it is colliding with another element
-			if( $(this).closest('.gc-container').find('.gc-components').data('colliding') ) {
+			if( $grid.find('.gc-components').data('colliding') ) {
 				return false;
 			}
 
-			var $clone = $(ui.draggable).clone();
-			var left = ui.offset.left - $(this).offset().left;
-			var top = ui.offset.top - $(this).offset().top;
+			if( item.id ) {
+				item.reference = GridComposer.getComponent.call(this, item.id);
+			}
+
+			$clone = $(item.reference).clone();
 
 			$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
 
-			// Put the id on the cloned element
-			$clone.data('id', ui.draggable.data('id'));
-
 			// Round the left and top positions to the nearest divisor of the grid dimension
-			if( left % settings.dimension > 0 ) {
-				left = Math.round(left / settings.dimension) * settings.dimension;
+			if( item.offsetLeft % settings.dimension > 0 ) {
+				item.offsetLeft = Math.round(item.offsetLeft / settings.dimension) * settings.dimension;
 			}
-			if( top % settings.dimension > 0 ) {
-				top = Math.round(top / settings.dimension) * settings.dimension;
+			if( item.offsetTop % settings.dimension > 0 ) {
+				item.offsetTop = Math.round(item.offsetTop / settings.dimension) * settings.dimension;
 			}
 
 			// Set the left and top positions and then append to the grid
 			$clone.css({
-				left: left,
-				top: top
-			}).appendTo(this);
+				left: item.offsetLeft,
+				top: item.offsetTop
+			}).appendTo($grid);
 
 			// Turn the grid items into draggables
-			$(this).children('.gc-grid-item:not(.gc-immobile)').draggable({
+			$grid.children('.gc-grid-item:not(.gc-immobile)').draggable({
 				containment: 'parent',
 				cursor: 'move',
 				grid: [settings.dimension, settings.dimension],
@@ -152,7 +168,7 @@ var jqGCTimer = false;
 			});
 
 			// Turn the grid items into resizables
-			$(this).children('[class*="gc-resize"]:not(.ui-resizable)').each(function(){
+			$grid.children('[class*="gc-resize"]:not(.ui-resizable)').each(function(){
 				var theClass = $(this).attr('class').match(/gc-resize[-a-z]*/)[0].split('-');
 
 				if( theClass.length > 2 ) {
@@ -170,7 +186,9 @@ var jqGCTimer = false;
 				}
 			});
 
-			$(ui.draggable).trigger('on-drop', $clone);
+			if( item.reference ) {
+				$(item.reference).trigger('on-drop', $clone);
+			}
 		},
 
 		removeFromGrid: function(item) {
@@ -182,8 +200,24 @@ var jqGCTimer = false;
 		}
 	};
 
-	$.fn.gridComposer = function( options ) {
-		var settings = $.extend({}, $.fn.gridComposer.defaults, options);
+	$.fn.gridComposer = function( methodOrOptions ) {
+
+		// If needed, call some methods
+		if( typeof( methodOrOptions ) == 'string' ) {
+			if( GridComposer[ methodOrOptions ] ) {
+				var options = typeof(arguments[1]) === 'object' ? arguments[1] : {};
+
+				return this.each(function() {
+					GridComposer[ methodOrOptions ].call( this, options );
+				});
+			}
+
+			return;
+		}
+
+		var settings = $.extend({}, $.fn.gridComposer.defaults, methodOrOptions);
+
+		GridComposer.settings = settings;
 
 		if( !settings.dimension ) {
 			$.error('Grid Composer: dimension must be defined');
@@ -339,7 +373,7 @@ var jqGCTimer = false;
 					accept: '.gc-grid-item',
 					tolerance: 'touch',
 					drop: function(event, ui) {
-						GridComposer.removeFromGrid.apply(GridComposer, ui.draggable);
+						GridComposer.removeFromGrid.call(GridComposer, ui.draggable);
 					}
 				});
 
@@ -351,7 +385,16 @@ var jqGCTimer = false;
 				accept: '.gc-component-item',
 				tolerance: 'fit',
 				drop: function(event, ui) {
-					GridComposer.addToGrid.apply(this, [event, ui, settings]);
+					var item = {
+						reference: ui.draggable,
+						offsetLeft: ui.offset.left - $(this).offset().left,
+						offsetTop: ui.offset.top - $(this).offset().top
+					};
+
+					// Put the id on the cloned element
+					item.reference.data('id', ui.draggable.data('id'));
+
+					GridComposer.addToGrid.call($(this).closest('.gc-container')[0], item);
 				}
 			});
 

@@ -312,11 +312,20 @@
 
 				console.log(items);
 			});
+
+			$('#callAddToGrid').click(function(){
+				$('#mainGrid').gridComposer('addToGrid', {
+					id: 1,
+					offsetLeft: 100,
+					offsetTop: 100
+				});
+			});
 		});
 	</script>
 </head>
 <body>
 	<div id="mainGrid"></div>
 	<button id="translateGrid" type="button">Translate to JSON</button>
+	<button id="callAddToGrid" type="button">Manual Add Component to Grid</button>
 </body>
 </html>
