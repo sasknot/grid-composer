@@ -14,6 +14,174 @@ var jqGCTimer = false;
 (function($) {
 	'use strict';
 
+	var GridComposer = {
+		settings: {},
+
+		init: function() {
+
+		},
+
+		addToGrid: function(event, ui, settings) {
+			// Prevent the drop if it is colliding with another element
+			if( $(this).closest('.gc-container').find('.gc-components').data('colliding') ) {
+				return false;
+			}
+
+			var $clone = $(ui.draggable).clone();
+			var left = ui.offset.left - $(this).offset().left;
+			var top = ui.offset.top - $(this).offset().top;
+
+			$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
+
+			// Put the id on the cloned element
+			$clone.data('id', ui.draggable.data('id'));
+
+			// Round the left and top positions to the nearest divisor of the grid dimension
+			if( left % settings.dimension > 0 ) {
+				left = Math.round(left / settings.dimension) * settings.dimension;
+			}
+			if( top % settings.dimension > 0 ) {
+				top = Math.round(top / settings.dimension) * settings.dimension;
+			}
+
+			// Set the left and top positions and then append to the grid
+			$clone.css({
+				left: left,
+				top: top
+			}).appendTo(this);
+
+			// Turn the grid items into draggables
+			$(this).children('.gc-grid-item:not(.gc-immobile)').draggable({
+				containment: 'parent',
+				cursor: 'move',
+				grid: [settings.dimension, settings.dimension],
+				zIndex: 4,
+
+				drag: function( event, ui ) {
+					var lastPosition = $(this).data('last-position');
+
+					if(
+						!lastPosition
+						|| (
+							lastPosition.left != ui.position.left
+							|| lastPosition.top != ui.position.top
+						)
+					) {
+						if( jqGCTimer ) {
+							clearTimeout(jqGCTimer);
+						}
+						jqGCTimer = false;
+
+						$(this).siblings('.gc-trash').removeClass('open');
+						$(this).parent().removeClass('gc-grid-with-timer');
+					}
+					else {
+						var onSide = (ui.position.left + $(this).width()) == $(this).parent().width();
+
+						if( onSide ) {
+							if( !jqGCTimer ) {
+								jqGCTimer = setTimeout(function() {
+									var $grid = $('.gc-container .gc-grid.gc-grid-with-timer');
+
+									if( $grid.length > 0 ) {
+										$grid.find('.gc-trash').addClass('open');
+									}
+
+									$grid.removeClass('gc-grid-with-timer');
+									jqGCTimer = false;
+								}, 500);
+
+								$(this).parent().addClass('gc-grid-with-timer');
+							}
+						}
+						else {
+							if( jqGCTimer ) {
+								clearTimeout(jqGCTimer);
+							}
+							jqGCTimer = false;
+
+							$(this).siblings('.gc-trash').removeClass('open');
+							$(this).parent().removeClass('gc-grid-with-timer');
+						}
+					}
+
+					// Prevent the collision with another element
+					if( settings.collision && $(this).hasClass('gc-can-overlay') === false ) {
+						var colliding = false;
+						var dragging = {
+							x: ui.position.left,
+							y: ui.position.top,
+							w: $(this).width(),
+							h: $(this).height()
+						};
+
+						$(this).addClass('gc-dragging');
+
+						$(this).siblings('.gc-grid-item:not(.gc-can-overlay)').each(function() {
+							$(this).removeClass('gc-dragging');
+
+							var draggable = {
+								x: $(this).position().left,
+								y: $(this).position().top,
+								w: $(this).width(),
+								h: $(this).height()
+							};
+
+							// Calculate if the dragging element is colliding with this draggable one with this magic formula
+							colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dragging,draggable);
+
+							if( colliding ) {
+								return false;
+							}
+						});
+
+						// Return the current position to the last valid position
+						if( colliding ) {
+							ui.position = $(this).data('last-position');
+						}
+
+						// Store the current position
+						else {
+							$(this).data('last-position', ui.position);
+						}
+					}
+					else {
+						$(this).data('last-position', ui.position);
+					}
+				}
+			});
+
+			// Turn the grid items into resizables
+			$(this).children('[class*="gc-resize"]:not(.ui-resizable)').each(function(){
+				var theClass = $(this).attr('class').match(/gc-resize[-a-z]*/)[0].split('-');
+
+				if( theClass.length > 2 ) {
+					var directions = theClass.slice(2).join(', ');
+
+					$(this).resizable({
+						containment: 'parent',
+						handles: directions,
+						grid: settings.dimension,
+						minWidth: $(this).width(),
+						minHeight: $(this).height(),
+						maxWidth: 500,
+						maxHeight: 500
+					});
+				}
+			});
+
+			$(ui.draggable).trigger('on-drop', $clone);
+		},
+
+		removeFromGrid: function(item) {
+			$(item).fadeOut(200, function() {
+				$(item).siblings('.gc-trash').removeClass('open');
+				$(item).parent().removeClass('gc-grid-with-timer');
+				$(item).remove();
+			});
+		}
+	};
+
 	$.fn.gridComposer = function( options ) {
 		var settings = $.extend({}, $.fn.gridComposer.defaults, options);
 
@@ -45,7 +213,7 @@ var jqGCTimer = false;
 			}
 		}
 		else {
-			$.error('Grid Composer: lines or height must be defined to calculate the grid');
+			$.error('Grid omposer: lines or height must be defined to calculate the grid');
 		}
 
 		// Iterate over the selected elements
@@ -171,12 +339,7 @@ var jqGCTimer = false;
 					accept: '.gc-grid-item',
 					tolerance: 'touch',
 					drop: function(event, ui) {
-						ui.draggable.fadeOut(200, function() {
-							$(this).siblings('.gc-trash').removeClass('open');
-							$(this).parent().removeClass('gc-grid-with-timer');
-
-							$(this).remove();
-						});
+						GridComposer.removeFromGrid.apply(GridComposer, ui.draggable);
 					}
 				});
 
@@ -188,153 +351,7 @@ var jqGCTimer = false;
 				accept: '.gc-component-item',
 				tolerance: 'fit',
 				drop: function(event, ui) {
-
-					// Prevent the drop if it is colliding with another element
-					if( $(this).closest('.gc-container').find('.gc-components').data('colliding') ) {
-						return false;
-					}
-
-					var $clone = $(ui.draggable).clone();
-					var left = ui.offset.left - $(this).offset().left;
-					var top = ui.offset.top - $(this).offset().top;
-
-					$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
-
-					// Put the id on the cloned element
-					$clone.data('id', ui.draggable.data('id'));
-
-					// Round the left and top positions to the nearest divisor of the grid dimension
-					if( left % settings.dimension > 0 ) {
-						left = Math.round(left / settings.dimension) * settings.dimension;
-					}
-					if( top % settings.dimension > 0 ) {
-						top = Math.round(top / settings.dimension) * settings.dimension;
-					}
-
-					// Set the left and top positions and then append to the grid
-					$clone.css({
-						left: left,
-						top: top
-					}).appendTo(this);
-
-					// Turn the grid items into draggables
-					$(this).children('.gc-grid-item:not(.gc-immobile)').draggable({
-						containment: 'parent',
-						cursor: 'move',
-						grid: [settings.dimension, settings.dimension],
-						zIndex: 4,
-
-						drag: function( event, ui ) {
-							var lastPosition = $(this).data('last-position');
-
-							if(
-								!lastPosition
-								|| (
-									lastPosition.left != ui.position.left
-									|| lastPosition.top != ui.position.top
-								)
-							) {
-								if( jqGCTimer ) {
-									clearTimeout(jqGCTimer);
-								}
-								jqGCTimer = false;
-
-								$(this).siblings('.gc-trash').removeClass('open');
-								$(this).parent().removeClass('gc-grid-with-timer');
-							}
-							else {
-								var onSide = (ui.position.left + $(this).width()) == $(this).parent().width();
-
-								if( onSide ) {
-									if( !jqGCTimer ) {
-										jqGCTimer = setTimeout(function() {
-											var $grid = $('.gc-container .gc-grid.gc-grid-with-timer');
-
-											if( $grid.length > 0 ) {
-												$grid.find('.gc-trash').addClass('open');
-											}
-
-											$grid.removeClass('gc-grid-with-timer');
-											jqGCTimer = false;
-										}, 500);
-
-										$(this).parent().addClass('gc-grid-with-timer');
-									}
-								}
-								else {
-									if( jqGCTimer ) {
-										clearTimeout(jqGCTimer);
-									}
-									jqGCTimer = false;
-
-									$(this).siblings('.gc-trash').removeClass('open');
-									$(this).parent().removeClass('gc-grid-with-timer');
-								}
-							}
-
-							// Prevent the collision with another element
-							if( settings.collision && $(this).hasClass('gc-can-overlay') === false ) {
-								var colliding = false;
-								var dragging = {
-									x: ui.position.left,
-									y: ui.position.top,
-									w: $(this).width(),
-									h: $(this).height()
-								};
-
-								$(this).addClass('gc-dragging');
-
-								$(this).siblings('.gc-grid-item:not(.gc-can-overlay)').each(function() {
-									$(this).removeClass('gc-dragging');
-
-									var draggable = {
-										x: $(this).position().left,
-										y: $(this).position().top,
-										w: $(this).width(),
-										h: $(this).height()
-									};
-
-									// Calculate if the dragging element is colliding with this draggable one with this magic formula
-									colliding = function(e,t){return!(e.y+e.h<=t.y||e.y>=t.y+t.h||e.x+e.w<=t.x||e.x>=t.x+t.w);}(dragging,draggable);
-
-									if( colliding ) {
-										return false;
-									}
-								});
-
-								// Return the current position to the last valid position
-								if( colliding ) {
-									ui.position = $(this).data('last-position');
-								}
-
-								// Store the current position
-								else {
-									$(this).data('last-position', ui.position);
-								}
-							}
-						}
-					});
-
-					// Turn the grid items into resizables
-					$(this).children('[class*="gc-resize"]:not(.ui-resizable)').each(function(){
-						var theClass = $(this).attr('class').match(/gc-resize[-a-z]*/)[0].split('-');
-
-						if( theClass.length > 2 ) {
-							var directions = theClass.slice(2).join(', ');
-
-							$(this).resizable({
-								containment: 'parent',
-								handles: directions,
-								grid: settings.dimension,
-								minWidth: $(this).width(),
-								minHeight: $(this).height(),
-								maxWidth: 500,
-								maxHeight: 500
-							});
-						}
-					});
-
-					$(ui.draggable).trigger('on-drop', $clone);
+					GridComposer.addToGrid.apply(this, [event, ui, settings]);
 				}
 			});
 
