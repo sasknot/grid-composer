@@ -53,6 +53,10 @@ var jqGCTimer = false;
 			// Put the id on the cloned element
 			$clone.data('id', item.reference.data('id'));
 
+			if( item.data ) {
+				$clone.data('data', item.data);
+			}
+
 			$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
 
 			// Round the left and top positions to the nearest divisor of the grid dimension
@@ -190,7 +194,7 @@ var jqGCTimer = false;
 			});
 
 			if( item.reference ) {
-				$(item.reference).trigger('on-drop', $clone);
+				item.reference.trigger('on-drop', $clone);
 			}
 		},
 
