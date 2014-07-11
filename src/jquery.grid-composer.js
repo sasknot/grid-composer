@@ -22,16 +22,16 @@ var jqGCTimer = false;
 		},
 
 		getComponent: function( id ) {
-			var component = false;
+			var $component = false;
 
 			$(this).find('.gc-components .gc-component-item').each(function() {
 				if( $(this).data('id') == id ) {
-					component = this;
+					$component = $(this);
 					return false;
 				}
 			});		
 
-			return component;
+			return $component;
 		},
 
 		addToGrid: function(item) {
@@ -48,7 +48,10 @@ var jqGCTimer = false;
 				item.reference = GridComposer.getComponent.call(this, item.id);
 			}
 
-			$clone = $(item.reference).clone();
+			$clone = item.reference.clone();
+
+			// Put the id on the cloned element
+			$clone.data('id', item.reference.data('id'));
 
 			$clone.removeClass('gc-component-item ui-draggable').addClass('gc-grid-item');
 
@@ -390,9 +393,6 @@ var jqGCTimer = false;
 						offsetLeft: ui.offset.left - $(this).offset().left,
 						offsetTop: ui.offset.top - $(this).offset().top
 					};
-
-					// Put the id on the cloned element
-					item.reference.data('id', ui.draggable.data('id'));
 
 					GridComposer.addToGrid.call($(this).closest('.gc-container')[0], item);
 				}
