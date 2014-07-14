@@ -235,10 +235,11 @@ var jqGCTimer = false;
 			settings.width = settings.columns * settings.dimension;
 		}
 		else if( settings.width ) {
-			settings.columns = settings.width / settings.dimension;
-			if( settings.columns % settings.dimension > 0 ) {
+			if( settings.width % settings.dimension > 0 ) {
 				$.error('Grid Composer: width is not divisible by the dimension parameter');
 			}
+
+			settings.columns = settings.width / settings.dimension;
 		}
 		else {
 			$.error('Grid Composer: columns or width must be defined to calculate the grid');
@@ -248,10 +249,11 @@ var jqGCTimer = false;
 			settings.height = settings.lines * settings.dimension;
 		}
 		else if( settings.height ) {
-			settings.lines = settings.height / settings.dimension;
 			if( settings.height % settings.dimension > 0 ) {
 				$.error('Grid Composer: width is not divisible by the dimension parameter');
 			}
+
+			settings.lines = settings.height / settings.dimension;
 		}
 		else {
 			$.error('Grid omposer: lines or height must be defined to calculate the grid');
