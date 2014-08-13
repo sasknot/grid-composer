@@ -68,10 +68,20 @@ var jqGCTimer = false;
 			}
 
 			// Set the left and top positions and then append to the grid
-			$clone.css({
+			var cloneProperties = {
 				left: item.offsetLeft,
 				top: item.offsetTop
-			}).appendTo($grid);
+			};
+
+			if( item.width ) {
+				cloneProperties.width = item.width;
+			}
+
+			if( item.height ) {
+				cloneProperties.height = item.height;
+			}
+
+			$clone.css(cloneProperties).appendTo($grid);
 
 			// Turn the grid items into draggables
 			$grid.children('.gc-grid-item:not(.gc-immobile)').draggable({
