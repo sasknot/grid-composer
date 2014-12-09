@@ -1,0 +1,332 @@
+<html>
+<head>
+	<meta charset="utf8">
+	<link rel="stylesheet" href="../build/plugins.min.css">
+	<link rel="stylesheet" href="../build/jquery.grid-composer.min.css">
+	<style>
+		body {
+			margin: 0;
+		}
+	</style>
+	<script src="../build/plugins.min.js"></script>
+	<!--<script src="../build/jquery.grid-composer.min.js"></script>-->
+	<script src="../src/jquery.grid-composer.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#mainGrid').gridComposer({
+				dimension: 20,
+				columns: 48,
+				lines: 20,
+				components: [
+					{
+						id: 1,
+						name: 'Task',
+						elements: [
+							{
+								image: 'img/task.png'
+							}
+						],
+						columns: 5,
+						lines: 3,
+						onDrop: function(event, item) {
+							var name = prompt('Name of the task');
+
+							if( name ) {
+								$(item).append('<span>' + name + '</span>');
+								$(item).data('data', {name:name});
+							}
+						}
+					},
+					{
+						id: 2,
+						name: 'Task Service',
+						elements: [
+							{
+								image: 'img/task_service.png'
+							}
+						],
+						columns: 5,
+						lines: 3,
+						onDrop: function(event, item) {
+							var name = prompt('Name of the task');
+
+							if( name ) {
+								$(item).append('<span>' + name + '</span>');
+							}
+						}
+					},
+					{
+						id: 3,
+						name: 'Start',
+						elements: [
+							{
+								image: 'img/start.png'
+							}
+						],
+						columns: 3,
+						lines: 3
+					},
+					{
+						id: 4,
+						name: 'If',
+						elements: [
+							{
+								image: 'img/if.png'
+							}
+						],
+						columns: 3,
+						lines: 3
+					},
+					{
+						id: 5,
+						name: 'Arrow Right',
+						elements: [
+							{
+								image: 'img/arrow_right.png',
+								css: {
+									right: 0
+								}
+							}
+						],
+						resize: ['e'],
+						columns: 4,
+						lines: 1,
+						overlay: true
+					},
+					{
+						id: 6,
+						name: 'Arrow Right Down',
+						elements: [
+							{
+								image: 'img/arrow_down.png',
+								css: {
+									bottom: 0,
+									right: 0
+								}
+							},
+							{
+								image: 'img/bar_left_down.png',
+								css: {
+									right: 0
+								}
+							}
+						],
+						resize: ['s', 'e', 'se'],
+						columns: 4,
+						lines: 3,
+						overlay: true
+					},
+					{
+						id: 7,
+						name: 'Arrow Left Down',
+						elements: [
+							{
+								image: 'img/arrow_down.png',
+								css: {
+									bottom: 0
+								}
+							},
+							{
+								image: 'img/bar_right_down.png'
+							}
+						],
+						resize: ['s', 'w', 'sw'],
+						columns: 4,
+						lines: 3,
+						overlay: true
+					},
+					{
+						id: 8,
+						name: 'Arrow Left',
+						elements: [
+							{
+								image: 'img/arrow_left.png'
+							}
+						],
+						resize: ['w'],
+						columns: 4,
+						lines: 1,
+						overlay: true
+					},
+					{
+						id: 9,
+						name: 'Arrow Down',
+						elements: [
+							{
+								image: 'img/arrow_down.png',
+								css: {
+									bottom: 0
+								}
+							}
+						],
+						resize: ['s'],
+						columns: 1,
+						lines: 3,
+						overlay: true
+					},
+					{
+						id: 10,
+						name: 'Arrow Up',
+						elements: [
+							{
+								image: 'img/arrow_up.png'
+							}
+						],
+						resize: ['n'],
+						columns: 1,
+						lines: 3,
+						overlay: true
+					},
+					{
+						id: 11,
+						name: 'Arrow Right Up',
+						elements: [
+							{
+								image: 'img/arrow_up.png',
+								css: {
+									right: 0
+								}
+							},
+							{
+								image: 'img/bar_left_up.png',
+								css: {
+									bottom: 0,
+									right: 0
+								}
+							}
+						],
+						resize: ['n', 'e', 'ne'],
+						columns: 4,
+						lines: 3,
+						overlay: true
+					},
+					{
+						id: 12,
+						name: 'Arrow Left Up',
+						elements: [
+							{
+								image: 'img/arrow_up.png'
+							},
+							{
+								image: 'img/bar_right_up.png',
+								css: {
+									bottom: 0
+								}
+							}
+						],
+						resize: ['n', 'w', 'nw'],
+						columns: 4,
+						lines: 3,
+						overlay: true
+					},
+					{
+						id: 13,
+						name: 'End',
+						elements: [
+							{
+								image: 'img/end.png'
+							}
+						],
+						columns: 3,
+						lines: 3
+					},
+					{
+						id: 14,
+						name: 'Lane',
+						elements: [
+							{
+								image: 'img/lane.png'
+							}
+						],
+						overlay: true,
+						immobile: true,
+						columns: 5,
+						lines: 3,
+						onDrop: function(event, item) {
+							var name = prompt('A name for the lane');
+							var height = 140;
+							var top = ($(item).siblings('.item-lane').length * height) - ($(item).siblings('.item-lane').length * 1);
+
+							var $newHTML = $('<div></div>').css({
+								border: '1px solid #333333',
+								height: height-2,
+								position: 'relative'
+							});
+
+							$('<div></div>').css({
+								'background-color': '#C0C0C0',
+								'border-bottom': '1px solid #333333',
+								color: '#333333',
+								left: -55,
+								overflow: 'hidden',
+								padding: '6px 0',
+								position: 'absolute',
+								'text-align': 'center',
+								top: 54,
+								'transform': 'rotate(270deg)',
+								'white-space': 'nowrap',
+								width: 140
+							}).text(name).appendTo($newHTML);
+
+							$(item).addClass('item-lane').css({
+								left: 0,
+								top: top,
+								width: '100%'
+							}).html($newHTML);
+						}
+					}
+				]
+			});
+
+			// $('#mainGrid').gridComposer('addComponent', {
+			// 	name: 'Start',
+			// 	image: 'img/component3.png'
+			// });
+
+
+			$('#translateGrid').click(function() {
+				var items = [];
+
+				$('#mainGrid .gc-grid .gc-grid-item').each(function(index) {
+					items.push({
+						id: $(this).data('id'),
+						index: index+1,
+						x: $(this).position().left,
+						y: $(this).position().top,
+						w: $(this).width(),
+						h: $(this).height(),
+						parentID: 0,
+						data: $(this).data('data') || ''
+					});
+				});
+
+				$.each(items, function(index, item) {
+					$.each(items, function(indexChild, itemChild) {
+						if(
+							((item.x + item.w) == itemChild.x)
+							&& (item.y <= itemChild.y && (item.y + item.h) > itemChild.y)
+						) {
+							items[indexChild].parentID = item.id;
+						}
+					});
+				});
+
+				console.log(items);
+			});
+
+			$('#callAddToGrid').click(function(){
+				$('#mainGrid').gridComposer('addToGrid', {
+					id: 1,
+					offsetLeft: 100,
+					offsetTop: 100
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="mainGrid"></div>
+	<button id="translateGrid" type="button">Translate to JSON</button>
+	<button id="callAddToGrid" type="button">Manual Add Component to Grid</button>
+</body>
+</html>
