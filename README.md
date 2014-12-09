@@ -3,6 +3,8 @@ grid-composer
 
 A plugin for putting elements in a grid.
 
+See the [demo](http://sasknot.github.io/grid-composer).
+
 
 Installation
 -------------
